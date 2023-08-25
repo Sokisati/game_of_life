@@ -6,8 +6,10 @@
 #include <iostream>
 
 //for using sleep() function
-#include <stdio.h>
 #include <unistd.h>
+
+//for using vector
+#include<vector>
 
 //for using color
 #include <windows.h>
@@ -15,10 +17,8 @@
 //for using randomnes
 #include <cstdlib>
 #include <ctime>
-#include <cmath>
 
 using namespace std;
-
 
 
 int main()
@@ -71,7 +71,7 @@ int main()
 /*x for x spectrum, y for y spectrum, delay for sleeping the program for a specific amount of seconds, aliveCells for counting alive cells in
 a generation, peakAliveCell for knowing the max amount of alive cells and peakGeneration for knowing which generation peaked in terms of alive cell count
 */
-    int x,y,g,delay,aliveCells,stableCounter,peakAliveCell,peakGeneration;
+    int x,y,g,swap,delay,aliveCells,peakAliveCell,peakGeneration;
 
 
     //for using color, nothing really special again
@@ -81,63 +81,49 @@ a generation, peakAliveCell for knowing the max amount of alive cells and peakGe
     SetConsoleTextAttribute(h,11);
 
 
-
-
     cout<<"type how big you want grid to be (fe: if you type 6 a grid of 6x6 will generate)"<<endl;
     cout<<"(please don't type more than 26, program usually can't handle that much and crash)"<<endl;
     cout<<"\n";
     cin>>x;
     y = x;
+    swap = 0;
     g = 0;
-    stableCounter = 0;
     aliveCells = 0;
     peakAliveCell = 0;
     peakGeneration = 0;
-    int aliveCellsArray[420];
-    int gridArray[x+1][y+1][420];
-
-
+    vector<int> aliveCellsVector;
+    int gridArray[x+1][y+1][2];
 
     cout<<"type how many seconds of delay you want between generations"<<endl;
     cin>>delay;
 
 
     cout<<"If you want a random generated first generation, type 1488. If you want to manually choose alive cells, type any other number"<<endl;
-    cout<<"or if you want to start the calculator mode, type 109"<<endl<<endl;
 
     int question3;
     cin>>question3;
     cout<<"\n";
     bool randomFirstGeneration;
-    bool calculatorMode;
 
     if(question3==1488)
     {
         randomFirstGeneration = true;
     }
-    if (question3==109)
-    {
-        calculatorMode = true;
-    }
+
 
 
 //mark dead
 
     for(int i=0; x>=i; i++)
     {
-
         for(int k=0; y>=k; k++)
         {
-
-            gridArray[k][i][g]=0;
-
-
+            gridArray[k][i][swap]=0;
         }
-
     }
     cout<<"select the cells that you want alive in the first generation, all the others will be counted as dead"<<endl;
 
-    if(randomFirstGeneration == false) {
+    if(!randomFirstGeneration) {
         while (true) {
             SetConsoleTextAttribute(h, 11);
             int a, b;
@@ -156,7 +142,7 @@ a generation, peakAliveCell for knowing the max amount of alive cells and peakGe
                 continue;
             }
             cout << "x" << a << ",y" << b << " will be alive in first generation" << endl;
-            gridArray[a][b][g] = 1;
+            gridArray[a][b][swap] = 1;
 
             cout << "\n";
 
@@ -164,44 +150,35 @@ a generation, peakAliveCell for knowing the max amount of alive cells and peakGe
     }
 
 
-
-
-if(randomFirstGeneration == true) {
-    for (int i = 0; x >= i; i++) {
-
-        for (int k = 0; y >= k; k++) {
-
-            if (rand() % 2 == 0) {
-                gridArray[k][i][g] = 0;
-            } else {
-                gridArray[k][i][g] = 1;
+    if(randomFirstGeneration) {
+        for (int i = 0; x >= i; i++) {
+            for (int k = 0; y >= k; k++) {
+                if (rand() % 2 == 0) {
+                    gridArray[k][i][swap] = 0;
+                } else {
+                    gridArray[k][i][swap] = 1;
+                }
             }
 
-
         }
-
     }
-}
 
 
 //write the first generation
     for(int i=0; x>=i; i++)
     {
-
         for(int k=0; y>=k; k++)
         {
-            if(gridArray[k][i][g]==1)
+            if(gridArray[k][i][swap]==1)
             {
                 SetConsoleTextAttribute(h,10);
-                cout<<"  "<<gridArray[k][i][g];
+                cout<<"  "<<gridArray[k][i][swap];
             }
             else
             {
                 SetConsoleTextAttribute(h,4);
-                cout<<"  "<<gridArray[k][i][g];
+                cout<<"  "<<gridArray[k][i][swap];
             }
-
-
         }
         cout<<"\n";
     }
@@ -215,37 +192,32 @@ if(randomFirstGeneration == true) {
 //we need to know how many alive neighbours a cell has so we can determine whether it's alive in the next gen or not (note: in all 8 directions)
         int neiCounter =0;
 
-
         for(int i=0; i<=x; i++)
         {
 
             for(int k=0; k<=y; k++)
             {
 
-
                 //lets count the alive neighbour cell for every cell
 
                 //every if statement has at least one safety precaution (like k!0=0 or i+1<=y) so that program doesn't look for an array value that doesn't exist.
                 //one more important thing is that we need to put the safety precaution first inside the statement
-               neiCounter=
-                       (k!=0 && gridArray[k-1][i][g]==1) +
-                       (k+1<=x && gridArray[k+1][i][g]==1) +
-                       (i+1<=y && gridArray[k][i+1][g]==1) +
-                       (i!=0 && gridArray[k][i-1][g]==1) +
-                       (i+1<=y && k!=0 && gridArray[k-1][i+1][g]==1) +
-                       (k!=0 && i!=0 && gridArray[k-1][i-1][g]==1) +
-                       (k+1<=x && i!=0 && gridArray[k+1][i-1][g]==1) +
-                       (k+1<=x && i+1<=y && gridArray[k+1][i+1][g]==1);
-
-
-
+                neiCounter=
+                        (k!=0 && gridArray[k-1][i][swap]==1) +
+                        (k+1<=x && gridArray[k+1][i][swap]==1) +
+                        (i+1<=y && gridArray[k][i+1][swap]==1) +
+                        (i!=0 && gridArray[k][i-1][swap]==1) +
+                        (i+1<=y && k!=0 && gridArray[k-1][i+1][swap]==1) +
+                        (k!=0 && i!=0 && gridArray[k-1][i-1][swap]==1) +
+                        (k+1<=x && i!=0 && gridArray[k+1][i-1][swap]==1) +
+                        (k+1<=x && i+1<=y && gridArray[k+1][i+1][swap]==1);
                 //lets judge if he is alive or not
 
+                if((neiCounter == 2 && gridArray[k][i][swap]==1) || (neiCounter == 3 && gridArray[k][i][swap] == 1) || (neiCounter == 3 && gridArray[k][i][swap] == 0)){
 
-                if((neiCounter == 2 && gridArray[k][i][g]==1) || (neiCounter == 3 && gridArray[k][i][g] == 1) || (neiCounter == 3 && gridArray[k][i][g] == 0)){
-                    gridArray[k][i][g+1] = 1;
+                    gridArray[k][i][!swap] = 1;
                 } else{
-                    gridArray[k][i][g+1] = 0;
+                    gridArray[k][i][!swap] = 0;
                 }
 
                 //we need to reset the counter so that it doesn't add up constantly
@@ -258,8 +230,8 @@ if(randomFirstGeneration == true) {
         sleep(delay);
 
 //now we are gonna operate for next generation
+        swap = !swap;
         g++;
-
 
         SetConsoleTextAttribute(h,11);
         cout<<"\n"<<"\n";
@@ -272,11 +244,10 @@ if(randomFirstGeneration == true) {
             for(int k=0; y>=k; k++)
             {
 
-                if(gridArray[k][i][g]==1)
+                if(gridArray[k][i][swap]==1)
                 {
                     aliveCells++;
                 }
-
 
             }
 
@@ -301,46 +272,25 @@ if(randomFirstGeneration == true) {
 //lets write down the next generation
         for(int i=0; x>=i; i++)
         {
-
             for(int k=0; y>=k; k++)
             {
-                if(gridArray[k][i][g]==1)
+                if(gridArray[k][i][swap]==1)
                 {
                     SetConsoleTextAttribute(h,10);
-                    cout<<"  "<<gridArray[k][i][g];
+                    cout<<"  "<<gridArray[k][i][swap];
                 }
                 else
                 {
                     SetConsoleTextAttribute(h,4);
-                    cout<<"  "<<gridArray[k][i][g];
+                    cout<<"  "<<gridArray[k][i][swap];
                 }
-
 
             }
             cout<<"\n";
         }
 
-        aliveCellsArray[g]=aliveCells;
-
-        if(g>2 && aliveCellsArray[g]==aliveCellsArray[g-1])
-        {
-            stableCounter++;
-        }
-        else
-        {
-            stableCounter=0;
-        }
-        SetConsoleTextAttribute(h,11);
-        if(stableCounter==15)
-        {
-            int endOfLine1;
-            cout<<"Looks like it reached into a stable or ever-repeating position. No need to calculate for another billion generations, right?"<<endl;
-            cout<<"peak number of alive cells was: "<<peakAliveCell<<" in generation: "<<peakGeneration<<endl;
-            cin>>endOfLine1;
-            break;
-        }
-
-        aliveCells=0;
+        aliveCellsVector.push_back(aliveCells);
+        aliveCells = 0;
 
     }
 
