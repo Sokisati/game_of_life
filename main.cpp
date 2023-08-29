@@ -20,6 +20,70 @@
 
 using namespace std;
 
+vector<int> patternFinderFunction(vector<int> testedVector)
+{
+
+    int i,c,p,checkAgain,t;
+    bool searchBool = false;
+
+    i = 1;
+    p = 0;
+    checkAgain = 1;
+
+    vector<int> foundPattern;
+
+    for(i; i<testedVector.size(); i++)
+    {
+        searchBool = false;
+        checkAgain = 1;
+
+
+
+        for(c=i-1; c>1; c--)
+        {
+            if(searchBool)
+            {
+                break;
+            }
+
+            while(testedVector[c]==testedVector[i])
+            {
+
+                searchBool = true;
+                p++;
+                if(i-c-p==0)
+                {
+                    if(checkAgain<2)
+                    {
+                        checkAgain++;
+                        t = c;
+                        c = i;
+                        i = 2*i - t;
+                        p = 0;
+                    }
+                    else{
+                        p = 0;
+                        for (p; i - c - p > 0; p++)
+                        {
+                            foundPattern.push_back(testedVector[i + p]);
+                        }
+                        return foundPattern;
+                    }
+                }
+
+                //pattern with period of above 8 are not possible within a 30x30 grid, hence the i-c>8
+                if(testedVector[c+p]!=testedVector[i+p] || i-c>8)
+                {
+                    p = 0;
+                    break;
+                }
+            }
+        }
+    }
+
+    return foundPattern;
+}
+
 
 int main()
 {
@@ -92,6 +156,7 @@ a generation, peakAliveCell for knowing the max amount of alive cells and peakGe
     peakAliveCell = 0;
     peakGeneration = 0;
     vector<int> aliveCellsVector;
+    vector<int> pattern;
     int gridArray[x+1][y+1][2];
 
     cout<<"type how many seconds of delay you want between generations"<<endl;
@@ -226,8 +291,6 @@ a generation, peakAliveCell for knowing the max amount of alive cells and peakGe
 
         }
 
-//we sometimes need to examine generations so there should be some breathing time (also it looks ugly as hell otherwise)
-        sleep(delay);
 
 //now we are gonna operate for next generation
         swap = !swap;
@@ -252,6 +315,7 @@ a generation, peakAliveCell for knowing the max amount of alive cells and peakGe
             }
 
         }
+
         if(aliveCells>peakAliveCell)
         {
             peakAliveCell=aliveCells;
@@ -289,8 +353,29 @@ a generation, peakAliveCell for knowing the max amount of alive cells and peakGe
             cout<<"\n";
         }
 
+        //we sometimes need to examine generations so there should be some breathing time (also it looks ugly as hell otherwise)
+        sleep(delay);
+
+
         aliveCellsVector.push_back(aliveCells);
+
+        pattern = patternFinderFunction(aliveCellsVector);
+        if(pattern.size()!=0)
+        {
+            cout<<"\n"<<endl;
+            SetConsoleTextAttribute(h,5);
+            cout<<"Pattern period is: "<<pattern.size()<<" and pattern itself is: "<<endl;
+
+            for(int i=0; i<pattern.size(); i++)
+            {
+                cout<<pattern[i]<<" ";
+            }
+            return 0;
+        }
+
         aliveCells = 0;
+
+
 
     }
 
