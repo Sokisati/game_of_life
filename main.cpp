@@ -102,8 +102,8 @@ int main()
         cout<<"If a dead cell has 3 alive neighbours, it is born in next generation"<<endl;
         cout<<"Every other cells are DEAD in next generation."<<endl;
         cout<<"User decides the first generation composition and program runs until (I added this feature):"<<endl;
-        cout<<"Either all cells are dead or alive cell count is exactly the same for 15 generations"<<endl;
-        cout<<" (which is almost always an indicator of a stable or ever-repeating pattern)"<<endl<<endl;
+        cout<<"Either all cells are dead or a repeating pattern (no less than 3 repetition) is found"<<endl;
+        cout<<" (which is always an indicator of a stable or ever-repeating pattern)"<<endl<<endl;
         cout<<"You might be thinking: What's so special about this damn program?!"<<endl;
         cout<<"If that's the case and you want to know even more, type 420 again and let me show you how deep the rabbit hole goes"<<endl;
         cout<<"Or if you want to start the program, type any other number"<<endl;
@@ -126,7 +126,7 @@ int main()
             cout<<"Fun fact: John Conway said that he used to hate his creation, because he thought it was overrated and overshadowed his other work because"<<endl;
             cout<<"when the name John Conway was the talk topic, everyone knew just about his game of life not a single thing about his math career which annoyed him"<<endl<<endl;
 
-            cout<<"If you are done with reading, type any number other than 1350"<<endl;
+            cout<<"If you are done with reading, type any number other"<<endl;
             cin>>done;
 
         }
