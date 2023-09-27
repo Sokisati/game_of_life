@@ -126,7 +126,7 @@ int main()
             cout<<"Fun fact: John Conway said that he used to hate his creation, because he thought it was overrated and overshadowed his other work because"<<endl;
             cout<<"when the name John Conway was the talk topic, everyone knew just about his game of life not a single thing about his math career which annoyed him"<<endl<<endl;
 
-            cout<<"If you are done with reading, type any number other"<<endl;
+            cout<<"If you are done with reading"<<endl;
             cin>>done;
 
         }
@@ -157,7 +157,7 @@ a generation, peakAliveCell for knowing the max amount of alive cells and peakGe
     peakGeneration = 0;
     vector<int> aliveCellsVector;
     vector<int> pattern;
-    int gridArray[x+1][y+1][2];
+    bool gridArray[x+1][y+1][2];
 
     cout<<"type how many seconds of delay you want between generations"<<endl;
     cin>>delay;
